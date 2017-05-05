@@ -325,9 +325,15 @@ class AssetUtil {
 
         try {
             Class<?> cls  = Class.forName(clsName + ".R$drawable");
-
             resId = (Integer) cls.getDeclaredField(drawable).get(Integer.class);
         } catch (Exception ignore) {}
+
+        if (resId == 0) {
+            try {
+                Class<?> cls  = Class.forName(clsName + ".R$mipmap");
+                resId = (Integer) cls.getDeclaredField(drawable).get(Integer.class);
+            } catch (Exception ignore) {}
+        }
 
         return resId;
     }
@@ -342,11 +348,7 @@ class AssetUtil {
         Resources res = context.getResources();
         int iconId;
 
-        iconId = getResIdForDrawable(getPkgName(), drawable);
-
-        if (iconId == 0) {
-            iconId = getResIdForDrawable("android", drawable);
-        }
+        iconId = getResIdForDrawable(drawable);
 
         if (iconId == 0) {
             iconId = android.R.drawable.screen_background_dark_transparent;
